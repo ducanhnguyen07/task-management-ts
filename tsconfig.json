@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "commonjs", // standard to work with modules
+    "removeComments": true, // delete comment when convert to js file
+    "esModuleInterop": true // import = require
+  }
+}
