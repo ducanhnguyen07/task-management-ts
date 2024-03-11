@@ -71,19 +71,26 @@ export const detail = async (req: Request, res: Response) => {
 };
 
 export const changeStatus = async(req: Request, res: Response) => {
-  try {
-    type StatusType = "initial" | "doing" | "finish" | "pending" | "notFinish";
+  const StatusType: string[] = ["initial", "doing", "finish", "pending", "notFinish"];
 
-    const id: string = req.params.id;
-    const status: StatusType = req.body.status;
-
-    await Task.updateOne({ _id: id }, { status: status });
-
-    res.json({
-      code: "200",
-      message: "Successfully!"
-    });
-  } catch (error) {
+  const id: string = req.params.id;
+  const status: string = req.body.status;
+  
+  if(StatusType.includes(status)) {
+    try {
+      await Task.updateOne({ _id: id }, { status: status });
+      
+      res.json({
+        code: "200",
+        message: "Successfully!"
+      });
+    } catch (error) {
+      res.json({
+        code: "400",
+        message: "Failed to update!"
+      });
+    }
+  } else {
     res.json({
       code: "400",
       message: "Failed to update!"
