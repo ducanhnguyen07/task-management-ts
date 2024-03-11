@@ -70,12 +70,12 @@ export const detail = async (req: Request, res: Response) => {
   res.json(task);
 };
 
-export const changeStatus = async(req: Request, res: Response) => {
+export const changeStatus = async (req: Request, res: Response) => {
   const StatusType: string[] = ["initial", "doing", "finish", "pending", "notFinish"];
 
   const id: string = req.params.id;
   const status: string = req.body.status;
-  
+
   if(StatusType.includes(status)) {
     try {
       await Task.updateOne({ _id: id }, { status: status });
@@ -96,4 +96,35 @@ export const changeStatus = async(req: Request, res: Response) => {
       message: "Failed to update!"
     });
   }
-}
+};
+
+export const changeMulti = async (req: Request, res: Response) => {
+  try {
+    const ids: string[] = req.body.ids;
+    const key: string = req.body.key;
+    const value: string = req.body.value;
+
+    switch (key) {
+      case "status":
+        await Task.updateMany({ _id: { $in: ids }}, { status: value });
+        break;
+    
+      default:
+        res.json({
+          code: "400",
+          message: "Not exist!"
+        });
+        break;
+    }
+
+    res.json({
+      code: "200",
+      message: "Successfully!"
+    });
+  } catch (error) {
+    res.json({
+      code: "400",
+      message: "Failed!"
+    });
+  }
+};
